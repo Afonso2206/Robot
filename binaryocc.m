@@ -44,6 +44,11 @@ lf.SensorPose = vehiclePose;
 mcl.SensorModel = lf;
 mcl.MotionModel = odo;
 
+
+%% Turning on the localization
+
+[isUpdated, estimatedPose, covariance] = mcl(vehiclePose, scan);
+
 %% Get the final particles with their weights
 
 
