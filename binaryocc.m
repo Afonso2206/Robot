@@ -38,6 +38,8 @@ lf = likelihoodFieldSensorModel;
 lf.SensorLimits = [0.5 40];
 lf.Map = map;
 
+%% Helper methods
+visualizationHelper = ExampleHelperMCLVisualization(map);
 
 %% Turning on the localization
 vehiclePose = [
@@ -62,7 +64,7 @@ lf.SensorPose = vehiclePose(1, :);
 mcl.SensorModel = lf;
 mcl.MotionModel = odo;
 
-numUpdates = 15;
+numUpdates = 2;
 i = 1;
 while i < numUpdates
 
@@ -71,9 +73,9 @@ while i < numUpdates
     scan = lidarScan(ranges, angles);
 
     [isUpdated, estimatedPose, estimatedCovariance] = mcl(pose, scan);
-    estimatedPose
     if isUpdated 
         i = i + 1;
+        plotStep(visualizationHelper, mcl, estimatedPose, ranges, angles, 2)
     end
 end
 
