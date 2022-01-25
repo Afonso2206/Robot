@@ -12,20 +12,19 @@ imageBW = imagePGM > 254;
 imageWB = 1 - imageBW;
 
 map = binaryOccupancyMap(imageWB);
-show(map);
 
 %% The initialization of the MCL
 
 mcl = monteCarloLocalization;
 mcl.UseLidarScan = true;
 mcl.InitialPose = [360 230 0];
-mcl.InitialCovariance = eye(3)*0.5;
+mcl.InitialCovariance = 0;
 mcl.ResamplingInterval = 1;
 
 %% LidarScan
 lidar = rangeSensor;
 lidar.HorizontalAngle = [-pi/2 pi/2];
-lidar.Range = [0 20];
+lidar.Range = [0 30];
 
 %% odometryMotionModel
 
@@ -44,7 +43,7 @@ visualizationHelper = ExampleHelperMCLVisualization(map);
 %% Turning on the localization
 vehiclePose = [
     360 230 0;
-    363 231 15;
+    360 230 5;
     364 235 60;
     360 240 110;
     360 245 60;
@@ -59,8 +58,6 @@ vehiclePose = [
     345 225 0;
     ];
 
-lf.SensorPose = vehiclePose(1, :);
-
 mcl.SensorModel = lf;
 mcl.MotionModel = odo;
 
@@ -71,11 +68,10 @@ while i < numUpdates
     pose = vehiclePose(i, :);
     [ranges, angles] = lidar(pose, map);
     scan = lidarScan(ranges, angles);
-
     [isUpdated, estimatedPose, estimatedCovariance] = mcl(pose, scan);
     if isUpdated 
         i = i + 1;
-        plotStep(visualizationHelper, mcl, estimatedPose, ranges, angles, 2)
+        plotStep(visualizationHelper, mcl, estimatedPose, scan.Ranges, scan.Angles, i);
     end
 end
 
