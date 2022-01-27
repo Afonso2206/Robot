@@ -23,7 +23,7 @@ lidar.Range = [0 30];
 %% odometryMotionModel
 
 odo = odometryMotionModel;
-odo.Noise = [0.2 0.2 0.2 0.2];
+odo.Noise = [0 0 0 0];
 
 %% LikelihoodFieldSensorModel
 
@@ -37,9 +37,8 @@ visualizationHelper = ExampleHelperMCLVisualization(map);
 
 %% Turning on the localization
 
-
 mcl.SensorModel = lf;
-%mcl.MotionModel = odo;
+mcl.MotionModel = odo;
 
 mcl.ParticleLimits = [500 5000];
 mcl.GlobalLocalization = false;
